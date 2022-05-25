@@ -5,7 +5,7 @@ services:
     build:
       context: ../sdc
       dockerfile: ../.devcontainer/Dockerfile
-    user: "koda"
+    user: koda
     working_dir: /home/koda
 
     network_mode: host
@@ -25,7 +25,7 @@ services:
       - UDEV=1
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility,display
     volumes:
-      - ..:/workspace
+      - ..:/workspace:cached
 
       # Forwards the local Docker socket to the container.
       - /var/run/docker.sock:/var/run/docker.sock

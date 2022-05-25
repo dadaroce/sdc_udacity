@@ -16,6 +16,19 @@ ARG USER_GID=$USER_UID
 ENV DEBIAN_FRONTEND noninteractive
 
 # -----------------------------------------------------------------------------
+# Create the user
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    # ------------------------------
+    # Free memory
+    && apt autoremove -y && apt clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# -----------------------------------------------------------------------------
 # Install essentials
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -32,13 +45,13 @@ RUN apt-get update && \
     python3-pip \
     python3-argcomplete \
     python3-distutils \
-    # ------------------------------
-    # Free memory
+    # ---------------------------------
     && apt autoremove -y && apt clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+
 # -----------------------------------------------------------------------------
-# PYTHON LIBRARIES
+# Python Libraries
 RUN pip3 install -U pip \
     && python3 -m pip install \
     # Add EXTRA DEV Python dependencies in here
@@ -47,13 +60,9 @@ RUN pip3 install -U pip \
     black~=20.8b1 \
     pylint~=2.11.1 \
     # ------------------------------
-    # Installing pytorch
-    # For RTX 30XX series we need to use torch >=1.8 because they only work with cuda>=11.1
-    https://download.pytorch.org/whl/cu111/torch-1.8.0%2Bcu111-cp38-cp38-linux_x86_64.whl \
-    # ------------------------------
     # Installing basics
     setuptools \
-    && /koda/.cache/pip
+    && rm -rf /koda/.cache/pip
 
 # -----------------------------------------------------------------------------
 # Install GCP client

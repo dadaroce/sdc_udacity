@@ -1,10 +1,10 @@
 version: "2.3"
 services:
-  balena-cli:
+  sdc-program:
     runtime: nvidia
     build:
-      context: ../
-      dockerfile: .devcontainer/Dockerfile
+      context: ../sdc
+      dockerfile: ../.devcontainer/Dockerfile
     user: "koda"
     working_dir: /home/koda
 

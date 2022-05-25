@@ -53,7 +53,7 @@ RUN pip3 install -U pip \
     # ------------------------------
     # Installing basics
     setuptools \
-    /koda/.cache/pip
+    && /koda/.cache/pip
 
 # -----------------------------------------------------------------------------
 # Install GCP client

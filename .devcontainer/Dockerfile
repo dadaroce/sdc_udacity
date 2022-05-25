@@ -37,6 +37,23 @@ RUN apt-get update && \
     && apt autoremove -y && apt clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+# -----------------------------------------------------------------------------
+# PYTHON LIBRARIES
+RUN pip3 install -U pip \
+    && python3 -m pip install \
+    # Add EXTRA DEV Python dependencies in here
+    # ------------------------------
+    # Tools to check code compliance
+    black~=20.8b1 \
+    pylint~=2.11.1 \
+    # ------------------------------
+    # Installing pytorch
+    # For RTX 30XX series we need to use torch >=1.8 because they only work with cuda>=11.1
+    https://download.pytorch.org/whl/cu111/torch-1.8.0%2Bcu111-cp38-cp38-linux_x86_64.whl \
+    # ------------------------------
+    # Installing basics
+    setuptools \
+    /koda/.cache/pip
 
 # -----------------------------------------------------------------------------
 # Install GCP client
@@ -48,9 +65,8 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
     && apt autoremove -y && apt clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Authenticate with local gcp-key.json
-COPY rover/configs/gcp-key.json .
-RUN gcloud auth activate-service-account --key-file ./gcp-key.json
+# # Authenticate with local gcp-key.json
+# COPY configs/gcp-key.json .
+# RUN gcloud auth activate-service-account --key-file ./gcp-key.json
 
-# set gcp-key to global env variable
-ENV GOOGLE_APPLICATION_CREDENTIALS /workspace/rover/configs/gcp-key.json
+CMD ["/bin/bash"]

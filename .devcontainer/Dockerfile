@@ -39,6 +39,7 @@ RUN apt-get update && \
     curl \
     git \
     jq \
+    openssh-client \
     # ------------------------------
     # Python
     python3 \
